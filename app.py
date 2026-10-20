@@ -9,9 +9,7 @@ if "flashcards" not in st.session_state:
       },
       {
           "question": "What does HTML stand for?",
-          "answer": (
-              "HyperText Markup Language"
-          ),
+          "answer": "HyperText Markup Language",
       },
       {
           "question": "What is 5 * 8?",
@@ -37,9 +35,7 @@ with st.sidebar.expander("Add New Card"):
   new_a = st.text_input("Answer", key="new_a")
   if st.button("Add Flashcard"):
     if new_q and new_a:
-      st.session_state.flashcards.append(
-          {"question": new_q, "answer": new_a}
-      )
+      st.session_state.flashcards.append({"question": new_q, "answer": new_a})
       st.success("Flashcard added!")
       st.rerun()
     else:
@@ -93,9 +89,7 @@ if st.session_state.flashcards:
 
 # Main Quiz Section
 if not st.session_state.flashcards:
-  st.warning(
-      "No flashcards available! Add some using the sidebar."
-  )
+  st.warning("No flashcards available! Add some using the sidebar.")
 else:
   if st.session_state.current_index >= len(st.session_state.flashcards):
     st.session_state.current_index = 0
@@ -114,5 +108,38 @@ else:
     st.success(f"**Answer:**\n\n### {current_card['answer']}")
 
   # Show/Hide Answer Button
-  if st.button(
-      "Hide Answer" if st.se
+  button_text = (
+      "Hide Answer" if st.session_state.show_answer else "Show Answer"
+  )
+  if st.button(button_text):
+    st.session_state.show_answer = not st.session_state.show_answer
+    st.rerun()
+
+  st.write("")  # spacing
+
+  # Navigation Buttons
+  col1, col2, col3 = st.columns(3)
+
+  with col1:
+    if st.button("⬅️ Previous"):
+      if st.session_state.current_index > 0:
+        st.session_state.current_index -= 1
+      else:
+        st.session_state.current_index = total_cards - 1
+      st.session_state.show_answer = False
+      st.rerun()
+
+  with col2:
+    if st.button("🔄 Reset Quiz"):
+      st.session_state.current_index = 0
+      st.session_state.show_answer = False
+      st.rerun()
+
+  with col3:
+    if st.button("Next ➡️"):
+      if st.session_state.current_index < total_cards - 1:
+        st.session_state.current_index += 1
+      else:
+        st.session_state.current_index = 0
+      st.session_state.show_answer = False
+      st.rerun()
